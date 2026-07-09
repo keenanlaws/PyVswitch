@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\pyvswitch.ico</ApplicationIcon>
+    <AssemblyName>PythonVersionSwitch</AssemblyName>
+    <RootNamespace>PythonVersionSwitch</RootNamespace>
+    <Version>0.4.0</Version>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
+    <FileVersion>0.4.0.0</FileVersion>
+    <InformationalVersion>0.4.0</InformationalVersion>
+    <Company>ecuunlock.com</Company>
+    <Product>pyvswitch</Product>
+    <Authors>ecuunlock.com</Authors>
+    <Copyright>Copyright (c) 2026 ecuunlock.com</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\python-shield.png" />
+    <Resource Include="Assets\pyvswitch-logo.png" />
+    <Resource Include="Assets\pyvswitch.ico" />
+  </ItemGroup>
+
+</Project>

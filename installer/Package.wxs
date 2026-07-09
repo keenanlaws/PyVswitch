@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix
+  xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package
+    Name="pyvswitch"
+    Manufacturer="ecuunlock.com"
+    Version="0.4.0"
+    UpgradeCode="6e6f1484-486b-475f-a3a3-34f890600f91"
+    Scope="perMachine">
+
+    <SummaryInformation
+      Description="pyvswitch installer"
+      Manufacturer="ecuunlock.com" />
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of pyvswitch is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="pyvswitch.ico" SourceFile="Assets\pyvswitch.ico" />
+    <Property Id="ARPPRODUCTICON" Value="pyvswitch.ico" />
+    <Property Id="ARPURLINFOABOUT" Value="https://ecuunlock.com" />
+    <Property Id="ARPCONTACT" Value="ecuunlock.com" />
+    <Property
+      Id="WIXUI_EXITDIALOGOPTIONALTEXT"
+      Value="pyvswitch installed successfully. Open it from the Start menu to switch Python versions." />
+
+    <ui:WixUI
+      Id="WixUI_InstallDir"
+      InstallDirectory="INSTALLFOLDER" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="installer\license.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="installer\WixUIDialogBmp.png" />
+    <WixVariable Id="WixUIBannerBmp" Value="installer\WixUIBannerBmp.png" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="ManufacturerFolder" Name="ecuunlock.com">
+        <Directory Id="INSTALLFOLDER" Name="pyvswitch">
+          <Component Id="AppExecutable" Guid="1fb8fcb3-c235-4b57-9e1d-b14ebfa1db54">
+            <File
+              Id="AppExe"
+              Source="artifacts\publish\win-x64\PythonVersionSwitch.exe"
+              Name="pyvswitch.exe"
+              KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="StartMenuCompanyFolder" Name="ecuunlock.com">
+        <Directory Id="StartMenuAppFolder" Name="pyvswitch">
+          <Component Id="StartMenuShortcutComponent" Guid="1ec4b9b4-879c-48ec-b49a-f4475f9dd6a9">
+            <Shortcut
+              Id="StartMenuShortcut"
+              Name="pyvswitch"
+              Description="Python version switcher"
+              Target="[INSTALLFOLDER]pyvswitch.exe"
+              WorkingDirectory="INSTALLFOLDER"
+              Icon="pyvswitch.ico" />
+            <RemoveFolder Id="RemoveStartMenuAppFolder" Directory="StartMenuAppFolder" On="uninstall" />
+            <RemoveFolder Id="RemoveStartMenuCompanyFolder" Directory="StartMenuCompanyFolder" On="uninstall" />
+            <RegistryValue
+              Root="HKCU"
+              Key="Software\ecuunlock.com\pyvswitch"
+              Name="StartMenuShortcut"
+              Type="integer"
+              Value="1"
+              KeyPath="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="pyvswitch" Level="1">
+      <ComponentRef Id="AppExecutable" />
+      <ComponentRef Id="StartMenuShortcutComponent" />
+    </Feature>
+  </Package>
+</Wix>

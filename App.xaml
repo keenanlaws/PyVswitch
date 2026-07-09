@@ -1,0 +1,27 @@
+<Application x:Class="PythonVersionSwitch.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <LinearGradientBrush x:Key="AppBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#050608" Offset="0" />
+            <GradientStop Color="#0B0F15" Offset="0.48" />
+            <GradientStop Color="#171B22" Offset="1" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="PanelBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#141922" Offset="0" />
+            <GradientStop Color="#0D1118" Offset="1" />
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="ElevatedPanelBrush" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1B2330" Offset="0" />
+            <GradientStop Color="#101620" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TextBrush" Color="#F6FAFF" />
+        <SolidColorBrush x:Key="MutedTextBrush" Color="#AEB9C8" />
+        <SolidColorBrush x:Key="BorderBrushSoft" Color="#2F4360" />
+        <SolidColorBrush x:Key="AccentBrush" Color="#3776AB" />
+        <SolidColorBrush x:Key="AccentAltBrush" Color="#FFD43B" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#EF5B5B" />
+        <SolidColorBrush x:Key="ChipBrush" Color="#182436" />
+    </Application.Resources>
+</Application>

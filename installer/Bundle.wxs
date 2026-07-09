@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix
+  xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle
+    Name="pyvswitch"
+    Manufacturer="ecuunlock.com"
+    Version="0.4.0"
+    UpgradeCode="2f2b67d2-a55a-40c7-b7d5-a3394f7405db"
+    IconSourceFile="Assets\pyvswitch.ico"
+    Compressed="yes">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+        Theme="hyperlinkLargeLicense"
+        LicenseUrl=""
+        LogoFile="Assets\pyvswitch-logo.png"
+        ShowVersion="yes" />
+    </BootstrapperApplication>
+
+    <Chain>
+      <MsiPackage
+        SourceFile="artifacts\installer\pyvswitch-0.4.0-win-x64.msi"
+        Vital="yes" />
+    </Chain>
+  </Bundle>
+</Wix>
