@@ -1,0 +1,62 @@
+name: release
+
+# Pushing a tag such as v1.0.0 builds the installer and publishes a GitHub release with it.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Check that the tag matches the project version
+        id: version
+        shell: pwsh
+        run: |
+          [xml]$props = Get-Content Directory.Build.props
+          $version = $props.Project.PropertyGroup.Version
+          $tag = "${{ github.ref_name }}"
+          if ($tag -ne "v$version") { throw "Tag $tag does not match Directory.Build.props version $version." }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Build installer
+        shell: pwsh
+        run: ./build-installer.ps1
+
+      - name: Checksums and release notes
+        shell: pwsh
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          $files = Get-ChildItem artifacts/installer -File | Where-Object { $_.Name -like "*$version*" -and $_.Extension -in ".exe", ".msi" }
+          $files | ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name } |
+            Set-Content artifacts/installer/SHA256SUMS.txt
+
+          # The release body is this version's section of the changelog.
+          $changelog = Get-Content CHANGELOG.md -Raw
+          $pattern = "(?ms)^## \[$([regex]::Escape($version))\][^\n]*\n(.*?)(?=^## \[|^\[[^\]]+\]: )"
+          $match = [regex]::Match($changelog, $pattern)
+          $notes = if ($match.Success) { $match.Groups[1].Value.Trim() } else { "See CHANGELOG.md." }
+          $notes += "`n`n### Install`n`nDownload **pyvswitch-setup-$version-win-x64.exe** below and run it. The installer is not code-signed, so Windows SmartScreen may ask you to confirm."
+          Set-Content artifacts/release-notes.md $notes
+
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = "${{ steps.version.outputs.version }}"
+          gh release create "${{ github.ref_name }}" `
+            "artifacts/installer/pyvswitch-setup-$version-win-x64.exe" `
+            "artifacts/installer/pyvswitch-$version-win-x64.msi" `
+            "artifacts/installer/SHA256SUMS.txt" `
+            --title "pyvswitch $version" `
+            --notes-file artifacts/release-notes.md

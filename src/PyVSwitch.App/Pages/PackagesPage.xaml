@@ -1,0 +1,180 @@
+<UserControl x:Class="PyVSwitch.App.Pages.PackagesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:PyVSwitch.App.Controls">
+    <UserControl.Resources>
+        <Style x:Key="Chip" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Text.Muted}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusRing}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Chrome" Background="{DynamicResource Neutral.Soft}" BorderBrush="Transparent" BorderThickness="1" CornerRadius="13" Padding="10,4">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                                <Setter Property="Foreground" Value="{DynamicResource Text}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="32,0,28,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Style="{StaticResource H1}" Text="Packages" />
+                <TextBlock Style="{StaticResource Muted}" Text="Each Python keeps its own libraries. Choose one, then add what you need." Margin="0,3,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock Style="{StaticResource Caption}" Text="INSTALL INTO" Margin="2,0,0,5" />
+                <ComboBox Width="290" ItemsSource="{Binding PackageTargets}" SelectedItem="{Binding SelectedTarget}" DisplayMemberPath="Label" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Add a package -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="32,0,28,12" Padding="16">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Style="{StaticResource Input}"
+                             ui:Ui.Icon="&#xE721;"
+                             ui:Ui.Placeholder="Package to install, for example  requests  or  numpy==2.1.0"
+                             Text="{Binding NewPackage, UpdateSourceTrigger=PropertyChanged}"
+                             KeyDown="NewPackage_KeyDown" />
+                    <ComboBox Grid.Column="1" Width="140" Height="36" Margin="8,0,0,0"
+                              ItemsSource="{Binding LookupVersions}"
+                              SelectedItem="{Binding LookupVersion}"
+                              ToolTip="Version to install"
+                              Visibility="{Binding LookupState, Converter={StaticResource VisibleWhen}, ConverterParameter='=found'}" />
+                    <Button Grid.Column="2" Style="{StaticResource Btn.Primary}" Height="36" Margin="8,0,0,0" ui:Ui.Icon="&#xE896;" Content="Install"
+                            Command="{Binding InstallPackageCommand}" />
+                </Grid>
+
+                <Border Style="{StaticResource Well}" Margin="0,10,0,0"
+                        Visibility="{Binding LookupState, Converter={StaticResource VisibleWhen}, ConverterParameter='=found'}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Lookup.Name}" FontWeight="SemiBold" FontSize="14" />
+                                <ui:Pill Content="{Binding Lookup.LatestVersion}" Tone="success" Margin="10,0,0,0" />
+                                <TextBlock Text="{Binding LookupRequires}" Foreground="{DynamicResource Text.Faint}" FontSize="12" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource Muted}" Text="{Binding Lookup.Summary}" Margin="0,5,0,0" FontSize="12.5" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Style="{StaticResource Btn.Link}" Content="Project page" VerticalAlignment="Center" Margin="14,0,4,0"
+                                Command="{Binding OpenLinkCommand}" CommandParameter="{Binding Lookup.HomePage}"
+                                Visibility="{Binding Lookup.HomePage, Converter={StaticResource VisibleWhen}, ConverterParameter=notempty}" />
+                    </Grid>
+                </Border>
+                <TextBlock Style="{StaticResource Muted}" FontSize="12.5" Margin="2,10,0,0" Text="Looking it up on PyPI…"
+                           Visibility="{Binding LookupState, Converter={StaticResource VisibleWhen}, ConverterParameter='=searching'}" />
+                <TextBlock FontSize="12.5" Margin="2,10,0,0" Foreground="{DynamicResource Warning}" Text="PyPI has no package with that exact name."
+                           Visibility="{Binding LookupState, Converter={StaticResource VisibleWhen}, ConverterParameter='=missing'}" />
+
+                <ItemsControl ItemsSource="{Binding Suggestions}" Margin="0,12,0,-6" Focusable="False">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource Chip}" Content="{Binding}"
+                                    Command="{Binding DataContext.PickSuggestionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+
+        <!-- Toolbar -->
+        <Grid Grid.Row="2" Margin="32,0,28,10">
+            <StackPanel Orientation="Horizontal">
+                <TextBox Style="{StaticResource Input}" Width="230" Height="34"
+                         ui:Ui.Icon="&#xE71C;"
+                         ui:Ui.Placeholder="Filter installed packages"
+                         Text="{Binding PackageFilter, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="{Binding PackageCountText}" Foreground="{DynamicResource Text.Faint}" VerticalAlignment="Center" Margin="14,0,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource Btn}" ui:Ui.Icon="&#xE895;" Content="Check for updates" Command="{Binding CheckUpdatesCommand}" />
+                <Button Style="{StaticResource Btn}" ui:Ui.Icon="&#xE74A;" Content="{Binding UpgradeAllLabel}" Margin="8,0,0,0" Command="{Binding UpgradeAllCommand}" />
+                <Button Style="{StaticResource Btn.Icon}" ui:Ui.Icon="&#xE8B5;" Margin="8,0,0,0" ToolTip="Install from a requirements.txt file" Command="{Binding ImportRequirementsCommand}" />
+                <Button Style="{StaticResource Btn.Icon}" ui:Ui.Icon="&#xE74E;" ToolTip="Save these packages as requirements.txt" Command="{Binding ExportRequirementsCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Installed packages -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="32,0,28,24" Padding="0" ClipToBounds="True">
+            <Grid>
+                <ProgressBar VerticalAlignment="Top" Height="2" Background="Transparent" IsIndeterminate="{Binding IsLoadingPackages}"
+                             Visibility="{Binding IsLoadingPackages, Converter={StaticResource VisibleWhen}}" />
+                <TextBlock Style="{StaticResource Muted}" Text="{Binding PackagesMessage}" Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"
+                           Visibility="{Binding PackagesMessage, Converter={StaticResource VisibleWhen}, ConverterParameter=notempty}" />
+                <ListBox Style="{StaticResource PlainList}" ItemsSource="{Binding PackagesView}" Padding="6,4"
+                         Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Row" Background="Transparent" CornerRadius="8" Padding="14,0,6,0" Height="42">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="13.5" />
+                                        <TextBlock Text="{Binding Version}" FontFamily="{StaticResource Font.Mono}" FontSize="12" Foreground="{DynamicResource Text.Muted}" Margin="12,1,0,0" VerticalAlignment="Center" />
+                                        <ui:Pill Content="{Binding UpdateLabel}" Tone="accent" Margin="12,0,0,0"
+                                                 Visibility="{Binding IsOutdated, Converter={StaticResource VisibleWhen}}" />
+                                    </StackPanel>
+                                    <StackPanel x:Name="Actions" Grid.Column="1" Orientation="Horizontal" Opacity="0.5">
+                                        <Button Style="{StaticResource Btn.Ghost}" Height="30" Content="Update" ui:Ui.Icon="&#xE74A;"
+                                                Command="{Binding Tag.UpgradePackageCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}"
+                                                Visibility="{Binding IsOutdated, Converter={StaticResource VisibleWhen}}" />
+                                        <Button Style="{StaticResource Btn.Icon}" Height="30" Width="30" ui:Ui.Icon="&#xE74D;" ToolTip="Remove from this Python"
+                                                Command="{Binding Tag.UninstallPackageCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" CommandParameter="{Binding}"
+                                                Visibility="{Binding CanRemove, Converter={StaticResource VisibleWhen}}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Row" Property="Background" Value="{DynamicResource Overlay.Hover}" />
+                                    <Setter TargetName="Actions" Property="Opacity" Value="1" />
+                                </Trigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

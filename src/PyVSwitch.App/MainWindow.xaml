@@ -1,0 +1,286 @@
+<Window x:Class="PyVSwitch.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:PyVSwitch.App.Controls"
+        Title="pyvswitch"
+        Width="1180"
+        Height="770"
+        MinWidth="1000"
+        MinHeight="660"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Assets/pyvswitch.ico"
+        Background="{DynamicResource Bg.Window}"
+        Foreground="{DynamicResource Text}"
+        FontFamily="{StaticResource Font.Ui}"
+        FontSize="13"
+        SnapsToDevicePixels="True"
+        UseLayoutRounding="True">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40"
+                      ResizeBorderThickness="6"
+                      GlassFrameThickness="0,0,0,1"
+                      CornerRadius="0"
+                      UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
+
+    <Grid x:Name="Root" Background="{DynamicResource Bg.Window}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="228" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar -->
+        <Border Background="{DynamicResource Bg.Sidebar}" BorderBrush="{DynamicResource Stroke}" BorderThickness="0,0,1,0">
+            <DockPanel Margin="12,0,12,14">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="64" Margin="6,6,0,10">
+                    <Image Source="/Assets/pyvswitch-logo.png" Width="34" Height="34" RenderOptions.BitmapScalingMode="HighQuality" />
+                    <StackPanel Margin="11,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="pyvswitch" FontFamily="{StaticResource Font.Display}" FontSize="17" FontWeight="SemiBold" />
+                        <TextBlock Text="{Binding AppVersion}" FontSize="11" Foreground="{DynamicResource Text.Faint}" Margin="0,1,0,0" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Active interpreter -->
+                <Button DockPanel.Dock="Bottom"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="versions"
+                        Cursor="Hand"
+                        ToolTip="Change the default Python">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Chrome"
+                                    Background="{DynamicResource Bg.Card}"
+                                    BorderBrush="{DynamicResource Stroke}"
+                                    BorderThickness="1"
+                                    CornerRadius="10"
+                                    Padding="12,10">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Chrome" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="7" Height="7" Fill="{DynamicResource Success}" VerticalAlignment="Center" />
+                            <TextBlock Text="DEFAULT PYTHON" Style="{StaticResource Caption}" FontSize="10" Margin="7,0,0,0" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding ActiveTitle}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource Text}" Margin="0,6,0,0" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Text="{Binding ActiveSummary}" FontSize="11.5" Foreground="{DynamicResource Text.Muted}" Margin="0,2,0,0" />
+                    </StackPanel>
+                </Button>
+
+                <StackPanel>
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE80F;" Content="Overview"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=overview}" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE8AB;" Content="Versions"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=versions}" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE896;" Content="Get Python"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=download}" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE7B8;" Content="Packages"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=packages}" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE9D9;" Content="Doctor"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=doctor}" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE99A;" Content="AI &amp; CLI"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=ai}" />
+                    <Border Height="1" Background="{DynamicResource Stroke}" Margin="8,10" />
+                    <RadioButton Style="{StaticResource NavItem}" ui:Ui.Icon="&#xE713;" Content="Settings"
+                                 IsChecked="{Binding Page, Converter={StaticResource IsEqual}, ConverterParameter=settings}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Content -->
+        <Grid Grid.Column="1" ClipToBounds="True">
+            <Ellipse Width="760" Height="560" Fill="{DynamicResource Glow.Blue}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-220,-330,0,0" IsHitTestVisible="False" />
+            <Ellipse Width="620" Height="520" Fill="{DynamicResource Glow.Yellow}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-260,-320" IsHitTestVisible="False" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <ProgressBar VerticalAlignment="Top"
+                             Height="2"
+                             Background="Transparent"
+                             IsIndeterminate="{Binding IsBusy}"
+                             Visibility="{Binding IsBusy, Converter={StaticResource VisibleWhen}}" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,6,0">
+                    <Button Style="{StaticResource Btn.Caption}" Content="&#xE921;" Click="Minimize_Click" ToolTip="Minimize" />
+                    <Button x:Name="MaximizeButton" Style="{StaticResource Btn.Caption}" Content="&#xE922;" Click="Maximize_Click" ToolTip="Maximize" />
+                    <Button Style="{StaticResource Btn.Caption}" Content="&#xE8BB;" Tag="close" Click="Close_Click" ToolTip="Close" />
+                </StackPanel>
+
+                <ContentControl x:Name="PageHost" Grid.Row="1" Focusable="False">
+                    <ContentControl.RenderTransform>
+                        <TranslateTransform x:Name="PageShift" />
+                    </ContentControl.RenderTransform>
+                </ContentControl>
+
+                <!-- Activity bar -->
+                <Border Grid.Row="2"
+                        DataContext="{Binding Activity}"
+                        Visibility="{Binding IsVisible, Converter={StaticResource VisibleWhen}}"
+                        Background="{DynamicResource Bg.Card}"
+                        BorderBrush="{DynamicResource Stroke}"
+                        BorderThickness="0,1,0,0">
+                    <StackPanel>
+                        <ProgressBar Height="3"
+                                     Value="{Binding Progress, Mode=OneWay}"
+                                     Maximum="1"
+                                     IsIndeterminate="{Binding IsIndeterminate}"
+                                     Visibility="{Binding IsRunning, Converter={StaticResource VisibleWhen}}" />
+                        <Grid Margin="32,12,20,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="34" Height="34" CornerRadius="17" Background="{DynamicResource Neutral.Soft}">
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Icon}">
+                                            <Setter Property="Text" Value="&#xE895;" />
+                                            <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Tone}" Value="success">
+                                                    <Setter Property="Text" Value="&#xE73E;" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource Success}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Tone}" Value="danger">
+                                                    <Setter Property="Text" Value="&#xEA39;" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource Danger}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="14,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Detail}" Foreground="{DynamicResource Text.Muted}" FontSize="12" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Button Style="{StaticResource Btn.Ghost}" Content="Log" ui:Ui.Icon="&#xE756;" Command="{Binding ToggleLogCommand}"
+                                        Visibility="{Binding HasLog, Converter={StaticResource VisibleWhen}}" />
+                                <Button Style="{StaticResource Btn}" Content="Cancel" Command="{Binding CancelCommand}" Margin="6,0,0,0"
+                                        Visibility="{Binding IsRunning, Converter={StaticResource VisibleWhen}}" />
+                                <Button Style="{StaticResource Btn.Icon}" ui:Ui.Icon="&#xE711;" Command="{Binding DismissCommand}" Margin="6,0,0,0" ToolTip="Dismiss"
+                                        Visibility="{Binding IsRunning, Converter={StaticResource VisibleWhen}, ConverterParameter=false}" />
+                            </StackPanel>
+                        </Grid>
+                        <Border Margin="32,0,20,14"
+                                Style="{StaticResource Well}"
+                                Padding="4"
+                                Visibility="{Binding IsLogOpen, Converter={StaticResource VisibleWhen}}">
+                            <TextBox x:Name="ActivityLog"
+                                     Text="{Binding LogText, Mode=OneWay}"
+                                     TextChanged="ActivityLog_TextChanged"
+                                     IsReadOnly="True"
+                                     Height="170"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{DynamicResource Text.Muted}"
+                                     FontFamily="{StaticResource Font.Mono}"
+                                     FontSize="12"
+                                     Padding="8,6"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto" />
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Toasts -->
+        <ItemsControl Grid.ColumnSpan="2"
+                      ItemsSource="{Binding Toasts}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Bottom"
+                      Margin="228,0,0,26"
+                      Focusable="False">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border x:Name="Toast"
+                            Background="{DynamicResource Bg.Elevated}"
+                            BorderBrush="{DynamicResource Stroke.Strong}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="14,10,8,10"
+                            Margin="0,8,0,0"
+                            MaxWidth="620"
+                            HorizontalAlignment="Center">
+                        <Border.Effect>
+                            <DropShadowEffect Color="{DynamicResource Shadow.Color}" BlurRadius="22" ShadowDepth="5" Direction="270" Opacity="0.4" />
+                        </Border.Effect>
+                        <Border.RenderTransform>
+                            <TranslateTransform Y="10" />
+                        </Border.RenderTransform>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.18" />
+                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)" To="0" Duration="0:0:0.22">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="ToastGlyph" Style="{StaticResource Icon}" Text="{Binding Glyph}" Foreground="{DynamicResource Success}" />
+                            <TextBlock Text="{Binding Message}" Margin="10,0,6,0" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="500" />
+                            <Button Style="{StaticResource Btn.Icon}" Width="26" Height="26" ui:Ui.Icon="&#xE711;"
+                                    Command="{Binding DataContext.DismissToastCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}" />
+                        </StackPanel>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Tone}" Value="danger">
+                            <Setter TargetName="ToastGlyph" Property="Foreground" Value="{DynamicResource Danger}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Tone}" Value="warning">
+                            <Setter TargetName="ToastGlyph" Property="Foreground" Value="{DynamicResource Warning}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Tone}" Value="accent">
+                            <Setter TargetName="ToastGlyph" Property="Foreground" Value="{DynamicResource Accent}" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Confirmation dialog -->
+        <Grid x:Name="DialogLayer" Grid.ColumnSpan="2" Visibility="Collapsed" Background="{DynamicResource Overlay}" WindowChrome.IsHitTestVisibleInChrome="True">
+            <Border Background="{DynamicResource Bg.Elevated}"
+                    BorderBrush="{DynamicResource Stroke.Strong}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Padding="26,24,26,22"
+                    Width="460"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect Color="{DynamicResource Shadow.Color}" BlurRadius="40" ShadowDepth="12" Direction="270" Opacity="0.5" />
+                </Border.Effect>
+                <StackPanel>
+                    <TextBlock x:Name="DialogTitle" Style="{StaticResource H2}" FontSize="18" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DialogMessage" Style="{StaticResource Muted}" Margin="0,10,0,0" LineHeight="20" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                        <Button x:Name="DialogCancel" Style="{StaticResource Btn}" Content="Cancel" MinWidth="88" Click="DialogCancel_Click" IsCancel="True" />
+                        <Button x:Name="DialogConfirm" Style="{StaticResource Btn.Primary}" Content="OK" MinWidth="88" Margin="8,0,0,0" Click="DialogConfirm_Click" IsDefault="True" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

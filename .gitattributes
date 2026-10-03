@@ -1,0 +1,7 @@
+* text=auto
+
+*.png binary
+*.ico binary
+*.msi binary
+*.exe binary
+*.wixpdb binary

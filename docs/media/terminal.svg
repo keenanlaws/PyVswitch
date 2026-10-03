@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 600" width="1280" height="600" role="img" aria-label="Terminal demo: pyvswitch list, pyvswitch install 3.14 --use, pyvswitch add requests numpy -p 3.14">
+  <title>pyvswitch in the terminal</title>
+  <style>
+    text { font-family: ui-monospace, 'Cascadia Mono', 'SF Mono', Consolas, monospace; font-size: 17px; white-space: pre; }
+    .ui { font-family: 'Segoe UI', Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+    .p { fill: #677286; }           /* prompt */
+    .c { fill: #EDF1F7; }           /* command */
+    .d { fill: #8490A5; }           /* dim output */
+    .g { fill: #3ECF8E; }           /* success */
+    .b { fill: #7DB8FA; }           /* accent */
+    .y { fill: #FFD43B; }
+
+    /* A cover the same colour as the terminal slides away to "type" each command. One 20s loop. */
+    .cover { fill: #0E1117; }
+    .t1 { animation: t1 20s infinite; }
+    .t2 { animation: t2 20s infinite; }
+    .t3 { animation: t3 20s infinite; }
+    .o1 { animation: o1 20s infinite; }
+    .o2a { animation: o2a 20s infinite; }
+    .o2b { animation: o2b 20s infinite; }
+    .o3 { animation: o3 20s infinite; }
+    .bar { animation: bar 20s infinite; transform-box: fill-box; transform-origin: left center; }
+    .caret { animation: blink 1s steps(2, start) infinite; }
+
+    @keyframes t1  { 0%, 3% { transform: translateX(0); animation-timing-function: steps(14, end); } 9%, 100% { transform: translateX(170px); } }
+    @keyframes o1  { 0%, 10% { opacity: 0; } 12%, 96% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes t2  { 0%, 26% { transform: translateX(0); animation-timing-function: steps(30, end); } 36%, 100% { transform: translateX(350px); } }
+    @keyframes o2a { 0%, 37% { opacity: 0; } 39%, 96% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes bar { 0%, 39% { transform: scaleX(0); animation-timing-function: cubic-bezier(.3,0,.3,1); } 52%, 100% { transform: scaleX(1); } }
+    @keyframes o2b { 0%, 53% { opacity: 0; } 55%, 96% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes t3  { 0%, 62% { transform: translateX(0); animation-timing-function: steps(38, end); } 74%, 100% { transform: translateX(440px); } }
+    @keyframes o3  { 0%, 78% { opacity: 0; } 80%, 96% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes blink { to { visibility: hidden; } }
+    .l2 { animation: l2 20s infinite; }
+    .l3 { animation: l3 20s infinite; }
+    @keyframes l2 { 0%, 23% { opacity: 0; } 25%, 100% { opacity: 1; } }
+    @keyframes l3 { 0%, 59% { opacity: 0; } 61%, 100% { opacity: 1; } }
+    .all { animation: all 20s infinite; }
+    @keyframes all { 0% { opacity: 0; } 2%, 96% { opacity: 1; } 100% { opacity: 0; } }
+  </style>
+
+  <rect width="1280" height="600" rx="24" fill="#0B0D12"/>
+  <rect x="1" y="1" width="1278" height="598" rx="23" fill="none" stroke="#252D3D" stroke-width="2"/>
+
+  <!-- window -->
+  <rect x="48" y="44" width="1184" height="512" rx="14" fill="#0E1117" stroke="#222938"/>
+  <path d="M48 58 a14 14 0 0 1 14 -14 h1156 a14 14 0 0 1 14 14 v30 h-1184 z" fill="#141821"/>
+  <circle cx="76" cy="66" r="6.5" fill="#F26D78"/>
+  <circle cx="98" cy="66" r="6.5" fill="#F2B84B"/>
+  <circle cx="120" cy="66" r="6.5" fill="#3ECF8E"/>
+  <text class="ui" x="640" y="72" text-anchor="middle" style="font-size:14px" fill="#8490A5">Windows PowerShell</text>
+
+  <g class="all">
+    <!-- 1: list -->
+    <text x="80" y="134" xml:space="preserve"><tspan class="p">PS&gt; </tspan><tspan class="c">pyvswitch list</tspan></text>
+    <rect class="cover t1" x="117" y="114" width="187" height="28"/>
+    <g class="o1">
+      <text x="80" y="164" class="d" xml:space="preserve">   VERSION  ARCH  SELECTOR  PATH</text>
+      <text x="80" y="190" xml:space="preserve"><tspan class="g">●  3.12.10</tspan><tspan class="c">  x64   3.12-64   C:\Users\you\AppData\Local\Programs\Python\Python312\python.exe</tspan></text>
+      <text x="80" y="216" class="d" xml:space="preserve">   3.10.11  x86   3.10-32   C:\Python310-32\python.exe</text>
+    </g>
+
+    <!-- 2: install -->
+    <g class="l2">
+      <text x="80" y="266" xml:space="preserve"><tspan class="p">PS&gt; </tspan><tspan class="c">pyvswitch install 3.14 --use</tspan></text>
+      <rect class="cover t2" x="117" y="246" width="367" height="28"/>
+    </g>
+    <g class="o2a">
+      <text x="80" y="296" class="d">  › Looking up python.org releases</text>
+      <rect x="102" y="310" width="330" height="16" rx="3" fill="#1C2230"/>
+      <rect class="bar" x="102" y="310" width="330" height="16" rx="3" fill="#4C9BF5"/>
+      <text x="448" y="324" class="d" xml:space="preserve">python-3.14.8-amd64.exe   31.8 MB   checksum verified</text>
+    </g>
+    <g class="o2b">
+      <text x="80" y="356"><tspan class="g">✓</tspan><tspan class="c"> Installed Python 3.14.8 x64.</tspan><tspan class="d">  It is now the default python for new terminals.</tspan></text>
+    </g>
+
+    <!-- 3: packages for one interpreter -->
+    <g class="l3">
+      <text x="80" y="406" xml:space="preserve"><tspan class="p">PS&gt; </tspan><tspan class="c">pyvswitch add requests numpy -p 3.14</tspan></text>
+      <rect class="cover t3" x="117" y="386" width="457" height="28"/>
+    </g>
+    <g class="o3">
+      <text x="80" y="436" class="b">› Installing into Python 3.14.8 x64</text>
+      <text x="80" y="462" class="d">  Successfully installed numpy-2.3.3 requests-2.34.2</text>
+      <text x="80" y="488"><tspan class="g">✓</tspan><tspan class="c"> Installed requests, numpy into Python 3.14.8 x64.</tspan></text>
+      <text x="80" y="528"><tspan class="p">PS&gt; </tspan><tspan class="c caret">▍</tspan></text>
+    </g>
+  </g>
+</svg>

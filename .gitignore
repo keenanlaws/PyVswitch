@@ -1,0 +1,40 @@
+# Build output
+bin/
+obj/
+artifacts/
+.wix/
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# User/local IDE state
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+*.bak
+
+# Package and installer output
+*.nupkg
+*.snupkg
+*.cab
+*.msi
+*.msi.log
+*.wixpdb
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Backups written by `pyvswitch ai setup`
+*.pyvswitch.bak

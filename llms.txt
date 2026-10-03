@@ -1,0 +1,27 @@
+# pyvswitch
+
+> A Python version manager for Windows. It lists every installed Python, switches which one
+> `python` runs, downloads and installs any python.org release, and manages packages separately
+> for each interpreter. It ships a desktop and tray app, a native CLI with `--json` output, and an
+> MCP server, so it can be driven by people, scripts and AI assistants.
+
+When pyvswitch is installed, the `pyvswitch` command is on PATH. Run `pyvswitch ai guide` for a
+complete, self-contained reference written for assistants.
+
+## Docs
+
+- [README](README.md): overview, screenshots, install instructions
+- [CLI reference](docs/CLI.md): every command, selector syntax, JSON output, exit codes
+- [AI and MCP guide](docs/AI.md): `pyvswitch ai setup`, supported tools, MCP tool list
+- [AGENTS.md](AGENTS.md): quick command table, plus conventions for working on the repository
+- [Changelog](CHANGELOG.md)
+
+## Most-used commands
+
+- `pyvswitch list --json`: installed interpreters and the active one
+- `pyvswitch use 3.12`: make a version the default `python` (new shells only)
+- `pyvswitch install 3.13 --use`: download, install and activate a version
+- `pyvswitch add <package>... -p 3.12`: install packages into one interpreter
+- `pyvswitch run -p 3.11 -- script.py`: run a version without switching
+- `pyvswitch doctor --json`: diagnose PATH problems
+- `pyvswitch mcp`: start the MCP server on stdio

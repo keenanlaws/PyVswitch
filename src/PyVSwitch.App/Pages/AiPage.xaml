@@ -1,0 +1,137 @@
+<UserControl x:Class="PyVSwitch.App.Pages.AiPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:PyVSwitch.App.Controls">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="32,0,28,14">
+            <StackPanel>
+                <TextBlock Style="{StaticResource H1}" Text="AI &amp; CLI" />
+                <TextBlock Style="{StaticResource Muted}" Text="Let AI assistants and scripts manage Python for you." Margin="0,3,0,0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource Btn}" ui:Ui.Icon="&#xE8C8;" Content="Copy AI guide" Command="{Binding CopyAiGuideCommand}"
+                        ToolTip="Copy the full usage guide, to paste into any assistant" />
+                <Button Style="{StaticResource Btn.Primary}" ui:Ui.Icon="&#xE71B;" Content="Connect all" Margin="8,0,0,0" Command="{Binding ConnectAllAiCommand}"
+                        ToolTip="Register pyvswitch with every AI tool found on this PC" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" Style="{StaticResource PageScroll}">
+            <StackPanel>
+                <Border CornerRadius="14" BorderThickness="1" BorderBrush="{DynamicResource Stroke}" Padding="20,18" Background="{DynamicResource Hero.Background}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="46" Height="46" CornerRadius="12" Background="{DynamicResource Accent.Soft}" VerticalAlignment="Top">
+                            <TextBlock Style="{StaticResource Icon}" FontSize="20" Text="&#xE99A;" Foreground="{DynamicResource Accent.Text}" />
+                        </Border>
+                        <StackPanel Margin="16,0,0,0" MaxWidth="700">
+                            <TextBlock Text="{Binding AiSummary}" FontFamily="{StaticResource Font.Display}" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            <TextBlock Style="{StaticResource Muted}" Margin="0,5,0,0"
+                                       Text="Connecting adds a short note to the assistant's instructions and registers the pyvswitch MCP server. After that, a request like &quot;install pandas into Python 3.12&quot; just works. Every file is backed up before it is changed, and Disconnect removes exactly what was added." />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tools -->
+                <ItemsControl ItemsSource="{Binding AiTools}" Margin="0,12,0,0" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Row" Style="{StaticResource Card.Row}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel x:Name="Info" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}" FontSize="14.5" FontWeight="SemiBold" />
+                                            <ui:Pill Content="{Binding McpLabel}" Tone="{Binding McpTone}" Margin="10,0,0,0"
+                                                     Visibility="{Binding Detected, Converter={StaticResource VisibleWhen}}" />
+                                            <ui:Pill Content="{Binding InstructionsLabel}" Tone="{Binding InstructionsTone}" Margin="6,0,0,0">
+                                                <ui:Pill.Style>
+                                                    <Style TargetType="ui:Pill" BasedOn="{StaticResource {x:Type ui:Pill}}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasInstructions}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Detected}" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ui:Pill.Style>
+                                            </ui:Pill>
+                                        </StackPanel>
+                                        <TextBlock Style="{StaticResource Mono}" Text="{Binding Detail}" Margin="0,5,0,0" />
+                                    </StackPanel>
+                                    <Button x:Name="Action" Grid.Column="1" Style="{StaticResource Btn}" MinWidth="104" Content="{Binding ActionLabel}"
+                                            IsEnabled="{Binding Detected}"
+                                            Command="{Binding Tag.ToggleAiCommand, ElementName=Row}" CommandParameter="{Binding}" />
+                                </Grid>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Detected}" Value="False">
+                                    <Setter TargetName="Info" Property="Opacity" Value="0.55" />
+                                    <Setter TargetName="Action" Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Grid Margin="0,14,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="12" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- CLI -->
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource H2}" Text="Command line" />
+                            <TextBlock Style="{StaticResource Muted}" FontSize="12.5" Margin="0,4,0,10" Text="pyvswitch is on PATH. Add --json to any command for machine-readable output." />
+                            <ItemsControl ItemsSource="{Binding CommandExamples}" Focusable="False"
+                                          Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,0,0,9">
+                                            <TextBlock Text="{Binding Title}" Foreground="{DynamicResource Text.Muted}" FontSize="12" Margin="2,0,0,4" />
+                                            <Border Style="{StaticResource Well}" Padding="12,2,2,2">
+                                                <DockPanel>
+                                                    <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Icon}" Width="28" Height="28" ui:Ui.Icon="&#xE8C8;" ToolTip="Copy"
+                                                            Command="{Binding Tag.CopyCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Command}" />
+                                                    <TextBlock Text="{Binding Command}" FontFamily="{StaticResource Font.Mono}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                </DockPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MCP -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource H2}" Text="MCP server" />
+                            <TextBlock Style="{StaticResource Muted}" FontSize="12.5" Margin="0,4,0,10"
+                                       Text="For a tool that is not listed above, add this to its MCP configuration. The server exposes 14 tools, from list_pythons to install_packages." />
+                            <Border Style="{StaticResource Well}" Padding="12,10">
+                                <TextBlock Text="{Binding McpSnippet}" FontFamily="{StaticResource Font.Mono}" FontSize="11.5" Foreground="{DynamicResource Text.Muted}" TextWrapping="Wrap" />
+                            </Border>
+                            <Button Style="{StaticResource Btn}" ui:Ui.Icon="&#xE8C8;" Content="Copy configuration" HorizontalAlignment="Left" Margin="0,10,0,0"
+                                    Command="{Binding CopyCommand}" CommandParameter="{Binding McpSnippet}" />
+                            <TextBlock Style="{StaticResource Muted}" FontSize="12.5" Margin="0,16,0,0"
+                                       Text="Any other assistant: paste the AI guide into its instructions, or have it run  pyvswitch ai guide." />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,55 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="Bg.Window" Color="#0B0D12" />
+    <SolidColorBrush x:Key="Bg.Sidebar" Color="#0E1117" />
+    <SolidColorBrush x:Key="Bg.Card" Color="#141821" />
+    <SolidColorBrush x:Key="Bg.CardHover" Color="#1A1F2B" />
+    <SolidColorBrush x:Key="Bg.Input" Color="#0F131A" />
+    <SolidColorBrush x:Key="Bg.Elevated" Color="#1B2130" />
+    <SolidColorBrush x:Key="Bg.Subtle" Color="#11151D" />
+    <SolidColorBrush x:Key="Stroke" Color="#222938" />
+    <SolidColorBrush x:Key="Stroke.Strong" Color="#323C50" />
+
+    <SolidColorBrush x:Key="Text" Color="#EDF1F7" />
+    <SolidColorBrush x:Key="Text.Muted" Color="#9AA5B8" />
+    <SolidColorBrush x:Key="Text.Faint" Color="#677286" />
+
+    <SolidColorBrush x:Key="Accent" Color="#4C9BF5" />
+    <SolidColorBrush x:Key="Accent.Hover" Color="#6AADF8" />
+    <SolidColorBrush x:Key="Accent.Pressed" Color="#3C86DA" />
+    <SolidColorBrush x:Key="Accent.Soft" Color="#172740" />
+    <SolidColorBrush x:Key="Accent.Text" Color="#7DB8FA" />
+    <SolidColorBrush x:Key="Accent.On" Color="#06101D" />
+
+    <SolidColorBrush x:Key="Brand.Yellow" Color="#FFD43B" />
+    <SolidColorBrush x:Key="Brand.Yellow.Soft" Color="#2B2610" />
+
+    <SolidColorBrush x:Key="Success" Color="#3ECF8E" />
+    <SolidColorBrush x:Key="Success.Soft" Color="#11281E" />
+    <SolidColorBrush x:Key="Warning" Color="#F2B84B" />
+    <SolidColorBrush x:Key="Warning.Soft" Color="#2C2311" />
+    <SolidColorBrush x:Key="Danger" Color="#F26D78" />
+    <SolidColorBrush x:Key="Danger.Soft" Color="#2D161A" />
+    <SolidColorBrush x:Key="Neutral.Soft" Color="#1C2230" />
+
+    <SolidColorBrush x:Key="Overlay.Hover" Color="#12FFFFFF" />
+    <SolidColorBrush x:Key="Overlay.Pressed" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Scroll.Thumb" Color="#2E3749" />
+    <SolidColorBrush x:Key="Scroll.ThumbHover" Color="#465269" />
+    <SolidColorBrush x:Key="Overlay" Color="#B3070910" />
+    <Color x:Key="Shadow.Color">#000000</Color>
+
+    <RadialGradientBrush x:Key="Glow.Blue" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+        <GradientStop Color="#3A2F7DE1" Offset="0" />
+        <GradientStop Color="#002F7DE1" Offset="1" />
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="Glow.Yellow" GradientOrigin="0.5,0.5" Center="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+        <GradientStop Color="#1FFFD43B" Offset="0" />
+        <GradientStop Color="#00FFD43B" Offset="1" />
+    </RadialGradientBrush>
+    <LinearGradientBrush x:Key="Hero.Background" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#16233A" Offset="0" />
+        <GradientStop Color="#141821" Offset="0.62" />
+        <GradientStop Color="#1D1B14" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>

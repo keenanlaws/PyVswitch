@@ -5,22 +5,23 @@
   <Bundle
     Name="pyvswitch"
     Manufacturer="ecuunlock.com"
-    Version="0.4.0"
+    Version="$(var.Version)"
     UpgradeCode="2f2b67d2-a55a-40c7-b7d5-a3394f7405db"
-    IconSourceFile="Assets\pyvswitch.ico"
+    IconSourceFile="src\PyVSwitch.App\Assets\pyvswitch.ico"
+    AboutUrl="https://github.com/keenanlaws/PyVswitch"
     Compressed="yes">
 
     <BootstrapperApplication>
       <bal:WixStandardBootstrapperApplication
         Theme="hyperlinkLargeLicense"
         LicenseUrl=""
-        LogoFile="Assets\pyvswitch-logo.png"
+        LogoFile="src\PyVSwitch.App\Assets\pyvswitch-logo.png"
         ShowVersion="yes" />
     </BootstrapperApplication>
 
     <Chain>
       <MsiPackage
-        SourceFile="artifacts\installer\pyvswitch-0.4.0-win-x64.msi"
+        SourceFile="artifacts\installer\pyvswitch-$(var.Version)-win-x64.msi"
         Vital="yes" />
     </Chain>
   </Bundle>

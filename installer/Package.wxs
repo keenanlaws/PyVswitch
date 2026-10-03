@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix
   xmlns="http://wixtoolset.org/schemas/v4/wxs"
-  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
+  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
   <Package
     Name="pyvswitch"
     Manufacturer="ecuunlock.com"
-    Version="0.4.0"
+    Version="$(var.Version)"
     UpgradeCode="6e6f1484-486b-475f-a3a3-34f890600f91"
     Scope="perMachine">
 
@@ -13,18 +14,20 @@
       Description="pyvswitch installer"
       Manufacturer="ecuunlock.com" />
 
+    <!-- Same UpgradeCode as every earlier release, so installing this removes the old version. -->
     <MajorUpgrade
+      Schedule="afterInstallInitialize"
       DowngradeErrorMessage="A newer version of pyvswitch is already installed." />
 
     <MediaTemplate EmbedCab="yes" />
 
-    <Icon Id="pyvswitch.ico" SourceFile="Assets\pyvswitch.ico" />
+    <Icon Id="pyvswitch.ico" SourceFile="src\PyVSwitch.App\Assets\pyvswitch.ico" />
     <Property Id="ARPPRODUCTICON" Value="pyvswitch.ico" />
-    <Property Id="ARPURLINFOABOUT" Value="https://ecuunlock.com" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/keenanlaws/PyVswitch" />
     <Property Id="ARPCONTACT" Value="ecuunlock.com" />
     <Property
       Id="WIXUI_EXITDIALOGOPTIONALTEXT"
-      Value="pyvswitch installed successfully. Open it from the Start menu to switch Python versions." />
+      Value="pyvswitch is installed. Open it from the Start menu, or run `pyvswitch` in a new terminal." />
 
     <ui:WixUI
       Id="WixUI_InstallDir"
@@ -34,15 +37,47 @@
     <WixVariable Id="WixUIDialogBmp" Value="installer\WixUIDialogBmp.png" />
     <WixVariable Id="WixUIBannerBmp" Value="installer\WixUIBannerBmp.png" />
 
+    <!-- The tray app and any running CLI/MCP server hold the files open; close them before replacing. -->
+    <util:CloseApplication
+      Id="CloseTrayApp"
+      Target="pyvswitchw.exe"
+      CloseMessage="yes"
+      EndSessionMessage="yes"
+      TerminateProcess="0"
+      RebootPrompt="no"
+      Timeout="3" />
+    <util:CloseApplication
+      Id="CloseCli"
+      Target="pyvswitch.exe"
+      CloseMessage="yes"
+      EndSessionMessage="yes"
+      TerminateProcess="0"
+      RebootPrompt="no"
+      Timeout="3" />
+
     <StandardDirectory Id="ProgramFiles64Folder">
       <Directory Id="ManufacturerFolder" Name="ecuunlock.com">
         <Directory Id="INSTALLFOLDER" Name="pyvswitch">
-          <Component Id="AppExecutable" Guid="1fb8fcb3-c235-4b57-9e1d-b14ebfa1db54">
+          <!-- pyvswitchw.exe is the desktop app; pyvswitch.exe is the CLI and MCP server (python.exe / pythonw.exe style). -->
+          <Component Id="DesktopApp" Guid="c4a1e2b7-3f6d-4c58-a9b0-7e2d5f8a1c36">
             <File
-              Id="AppExe"
-              Source="artifacts\publish\win-x64\PythonVersionSwitch.exe"
-              Name="pyvswitch.exe"
+              Id="GuiExe"
+              Source="artifacts\publish\pyvswitchw.exe"
               KeyPath="yes" />
+          </Component>
+          <Component Id="CommandLine" Guid="1fb8fcb3-c235-4b57-9e1d-b14ebfa1db54">
+            <File
+              Id="CliExe"
+              Source="artifacts\publish\pyvswitch.exe"
+              KeyPath="yes" />
+            <Environment
+              Id="PathEntry"
+              Name="PATH"
+              Value="[INSTALLFOLDER]"
+              Part="last"
+              Action="set"
+              System="yes"
+              Permanent="no" />
           </Component>
         </Directory>
       </Directory>
@@ -55,8 +90,8 @@
             <Shortcut
               Id="StartMenuShortcut"
               Name="pyvswitch"
-              Description="Python version switcher"
-              Target="[INSTALLFOLDER]pyvswitch.exe"
+              Description="Switch, install and manage Python versions"
+              Target="[INSTALLFOLDER]pyvswitchw.exe"
               WorkingDirectory="INSTALLFOLDER"
               Icon="pyvswitch.ico" />
             <RemoveFolder Id="RemoveStartMenuAppFolder" Directory="StartMenuAppFolder" On="uninstall" />
@@ -74,7 +109,8 @@
     </StandardDirectory>
 
     <Feature Id="MainFeature" Title="pyvswitch" Level="1">
-      <ComponentRef Id="AppExecutable" />
+      <ComponentRef Id="DesktopApp" />
+      <ComponentRef Id="CommandLine" />
       <ComponentRef Id="StartMenuShortcutComponent" />
     </Feature>
   </Package>

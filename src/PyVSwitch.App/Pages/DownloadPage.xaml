@@ -1,0 +1,107 @@
+<UserControl x:Class="PyVSwitch.App.Pages.DownloadPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="clr-namespace:PyVSwitch.App.Controls">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="32,0,28,14">
+            <StackPanel>
+                <TextBlock Style="{StaticResource H1}" Text="Get Python" />
+                <TextBlock Style="{StaticResource Muted}" Text="Official installers from python.org, checksum-verified and installed silently." Margin="0,3,0,0" />
+            </StackPanel>
+            <Button Style="{StaticResource Btn}" ui:Ui.Icon="&#xE72C;" Content="Refresh list" HorizontalAlignment="Right" Command="{Binding ReloadCatalogCommand}" />
+        </Grid>
+
+        <!-- Filters -->
+        <Grid Grid.Row="1" Margin="32,0,28,14">
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource SegmentGroup}">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" Content="Supported"
+                                     IsChecked="{Binding SeriesFilter, Converter={StaticResource IsEqual}, ConverterParameter=supported}" />
+                        <RadioButton Style="{StaticResource Segment}" Content="All versions"
+                                     IsChecked="{Binding SeriesFilter, Converter={StaticResource IsEqual}, ConverterParameter=all}" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="Build" Foreground="{DynamicResource Text.Faint}" VerticalAlignment="Center" Margin="20,0,8,0" />
+                <Border Style="{StaticResource SegmentGroup}">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Style="{StaticResource Segment}" Content="64-bit"
+                                     IsChecked="{Binding Architecture, Converter={StaticResource IsEqual}, ConverterParameter=x64}" />
+                        <RadioButton Style="{StaticResource Segment}" Content="32-bit"
+                                     IsChecked="{Binding Architecture, Converter={StaticResource IsEqual}, ConverterParameter=x86}" />
+                        <RadioButton Style="{StaticResource Segment}" Content="ARM64"
+                                     IsChecked="{Binding Architecture, Converter={StaticResource IsEqual}, ConverterParameter=arm64}" />
+                    </StackPanel>
+                </Border>
+
+                <CheckBox Style="{StaticResource Switch}" IsChecked="{Binding ShowPrereleases}" Margin="20,0,0,0" />
+                <TextBlock Text="Pre-releases" Foreground="{DynamicResource Text.Muted}" VerticalAlignment="Center" Margin="9,0,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer Grid.Row="2" Style="{StaticResource PageScroll}">
+            <StackPanel>
+                <Border Style="{StaticResource Card}" Margin="0,0,0,10" Visibility="{Binding IsCatalogLoading, Converter={StaticResource VisibleWhen}}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource Muted}" Text="Loading the release list from python.org…" />
+                        <ProgressBar IsIndeterminate="True" Margin="0,12,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{DynamicResource Warning.Soft}" CornerRadius="10" Padding="14,12" Margin="0,0,0,10"
+                        Visibility="{Binding CatalogMessage, Converter={StaticResource VisibleWhen}, ConverterParameter=notempty}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource Icon}" Text="&#xE7BA;" Foreground="{DynamicResource Warning}" />
+                        <TextBlock Text="{Binding CatalogMessage}" TextWrapping="Wrap" Margin="12,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding SeriesItems}" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border x:Name="Row" Style="{StaticResource Card.Row}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Title}" FontSize="15.5" FontWeight="SemiBold" />
+                                            <ui:Pill Content="{Binding StatusLabel}" Tone="{Binding StatusTone}" Margin="10,0,0,0" />
+                                            <ui:Pill Content="{Binding InstalledText}" Tone="accent" Margin="6,0,0,0"
+                                                     Visibility="{Binding HasInstalled, Converter={StaticResource VisibleWhen}}" />
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Subtitle}" Foreground="{DynamicResource Text.Muted}" FontSize="12.5" Margin="0,5,0,0" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="16,0,0,0">
+                                        <ComboBox Width="158"
+                                                  ItemsSource="{Binding Choices}"
+                                                  SelectedItem="{Binding Selected}"
+                                                  DisplayMemberPath="Label"
+                                                  Visibility="{Binding HasChoices, Converter={StaticResource VisibleWhen}}" />
+                                        <Button Style="{StaticResource Btn.Primary}" MinWidth="98" Margin="8,0,0,0"
+                                                Content="{Binding ActionLabel}"
+                                                IsEnabled="{Binding CanInstall}"
+                                                Command="{Binding Tag.InstallReleaseCommand, ElementName=Row}"
+                                                CommandParameter="{Binding}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <TextBlock Style="{StaticResource Muted}" FontSize="12" Margin="2,8,0,0"
+                           Text="Installs go to your user profile and need no administrator rights. pyvswitch keeps PATH under its own control, so installing never changes which version is the default. Security-only patch releases are published as source code and have no Windows installer; the list offers the newest release that does." />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

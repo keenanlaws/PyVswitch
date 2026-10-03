@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <RootNamespace>PyVSwitch.Cli</RootNamespace>
+    <AssemblyName>pyvswitch</AssemblyName>
+    <ApplicationIcon>..\PyVSwitch.App\Assets\pyvswitch.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- Published as a small native executable so it starts instantly for scripts and AI agents. -->
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <OptimizationPreference>Size</OptimizationPreference>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PyVSwitch.Core\PyVSwitch.Core.csproj" />
+  </ItemGroup>
+
+</Project>

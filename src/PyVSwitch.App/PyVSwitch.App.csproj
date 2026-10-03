@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\pyvswitch.ico</ApplicationIcon>
+    <AssemblyName>pyvswitchw</AssemblyName>
+    <RootNamespace>PyVSwitch.App</RootNamespace>
+    <!-- The manifest sets per-monitor DPI awareness for WPF; the WinForms analyzer does not know that. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WinForms is referenced only for the tray icon; keep its types out of the global namespace. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\pyvswitch-logo.png" />
+    <Resource Include="Assets\pyvswitch.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PyVSwitch.Core\PyVSwitch.Core.csproj" />
+  </ItemGroup>
+
+</Project>
